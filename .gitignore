@@ -1,7 +1,6 @@
 .DS_Store
 .env
 !/.gitattributes
-!/package.json
 !/LICENSE
 !/.npmignore
 logs
@@ -10,7 +9,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 pids
 *.pid
 *.seed
