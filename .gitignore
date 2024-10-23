@@ -1,7 +1,6 @@
 .DS_Store
 .env
 !/.gitattributes
-!/package.json
 !/LICENSE
 !/.npmignore
 logs
