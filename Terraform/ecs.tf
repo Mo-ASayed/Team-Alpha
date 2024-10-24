@@ -10,8 +10,8 @@ resource "aws_ecs_cluster" "tmmodel" {
 }
 
 # Create ECS Task Definition
-resource "aws_ecs_task_definition" "test" {
-  family                   = "test"
+resource "aws_ecs_task_definition" "tm_cm" {
+  family                   = "tm_cm"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 1024
@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" "test" {
   container_definitions    = <<TASK_DEFINITION
 [
   {
-    "name": "latest",
+    "name": "threatmodel",
     "image": "992382674979.dkr.ecr.eu-west-2.amazonaws.com/threatmodelapp:latest",
     "cpu": 1024,
     "memory": 2048,
@@ -47,7 +47,7 @@ TASK_DEFINITION
 resource "aws_ecs_service" "tm_service" {
   name            = "tm_service"
   cluster         = aws_ecs_cluster.tmmodel.arn
-  task_definition = aws_ecs_task_definition.test.arn
+  task_definition = aws_ecs_task_definition.tm_cm.arn
   desired_count   = 3
   launch_type     = "FARGATE"
   
@@ -59,7 +59,7 @@ resource "aws_ecs_service" "tm_service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.tm_target_group.arn
-    container_name   = "latest"
+    container_name   = "threatmodel"
     container_port   = 3000  # Forwarding traffic to container on port 3000
   }
 }
