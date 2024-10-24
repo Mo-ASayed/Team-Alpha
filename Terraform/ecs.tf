@@ -10,8 +10,8 @@ resource "aws_ecs_cluster" "tmmodel" {
 }
 
 # Create ECS Task Definition
-resource "aws_ecs_task_definition" "tm_cm" {
-  family                   = "tm_cm"
+resource "aws_ecs_task_definition" "threatmodeltask" {
+  family                   = "threatmodeltask"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 1024
@@ -47,7 +47,7 @@ TASK_DEFINITION
 resource "aws_ecs_service" "tm_service" {
   name            = "tm_service"
   cluster         = aws_ecs_cluster.tmmodel.arn
-  task_definition = aws_ecs_task_definition.tm_cm.arn
+  task_definition = aws_ecs_task_definition.threatmodeltask.arn
   desired_count   = 3
   launch_type     = "FARGATE"
   
