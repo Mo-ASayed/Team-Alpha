@@ -13,7 +13,7 @@ resource "aws_ecs_task_definition" "threatmodeltask" {
   network_mode             = "awsvpc"
   cpu                      = 1024
   memory                   = 2048
-  execution_role_arn      = aws_iam_role.ecs_task_execution_role.arn  # Add execution role
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn # Add execution role
   container_definitions    = <<TASK_DEFINITION
 [
   {
@@ -44,7 +44,7 @@ resource "aws_ecs_service" "tm_service" {
   task_definition = aws_ecs_task_definition.threatmodeltask.arn
   desired_count   = 3
   launch_type     = "FARGATE"
-  
+
   network_configuration {
     subnets          = [aws_subnet.tm_subnet1.id, aws_subnet.tm_subnet2.id]
     security_groups  = [aws_security_group.tm_ecs_sg.id]
@@ -53,7 +53,7 @@ resource "aws_ecs_service" "tm_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.tm_target_group.arn
     container_name   = "threatmodel"
-    container_port   = 3000  # Forwarding traffic to container on port 3000
+    container_port   = 3000 # Forwarding traffic to container on port 3000
   }
 }
 # IAM Role for ECS Task Execution
