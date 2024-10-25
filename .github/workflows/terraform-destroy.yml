@@ -1,7 +1,12 @@
 name: Terraform Destroy
 
 on:
-  workflow_dispatch:  # Allows manual triggering of the destroy pipeline
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type 'yes' to confirm destruction of infrastructure."
+        required: true
+        default: "no"
 
 jobs:
   terraform:
