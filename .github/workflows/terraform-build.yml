@@ -3,46 +3,105 @@ name: Terraform Build
 on:
   workflow_dispatch:
     inputs:
-      confirm:
-        description: "Type 'yes' to proceed with Terraform build."
+      confirmation:
+        description: 'Type "yes" to confirm deployment'
         required: true
-        default: "no"
+        default: 'no'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
 
 jobs:
-  terraform:
+  security_scan:
+    name: 'Security Scan'
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' || inputs.confirm == 'yes' }}  # Runs only on push or if 'yes' is confirmed
-
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.3
-
-      - name: Terraform Init
-        env:                        # i need to figure out what the aws access key and secret access key is and where to store it
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Pull Docker image from ECR
+        run: |
+          IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/mohammedsayed/threat-composer:latest
+          docker pull $IMAGE_URI
+
+      - name: Scan Docker image for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/mohammedsayed/threat-composer:latest
+          severity: CRITICAL
+
+  terraform_static_analysis:
+    name: 'Terraform Static Analysis'
+    needs: security_scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Terraform Format
+        run: terraform fmt --recursive
+
+      - name: Terraform Format Check
+        run: terraform fmt -check
+
+      - name: Terraform Init
         run: terraform init
 
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Install tflint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          tflint --version
+
+      - name: Terraform Lint
+        run: tflint
+
+  terraform_plan:
+    name: 'Terraform Plan'
+    needs: terraform_static_analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Terraform Plan
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: terraform plan
+        id: tf-plan
+        run: |
+          terraform init
+          terraform plan -out=tfplan
+          terraform show -no-color tfplan > tf-plan.txt
+      
+      - name: Upload Terraform Plan Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: tf-plan
+          path: tf-plan.txt
+
+  terraform_apply:
+    name: 'Terraform Apply'
+    needs: terraform_plan
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirmation == 'yes'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Terraform Apply
-        if: ${{ github.event_name == 'push' || inputs.confirm == 'yes' }}  # Apply only if pushed or confirmed
-
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: terraform apply -auto-approve
-        
+        run: |
+          terraform init
+          terraform apply -auto-approve
