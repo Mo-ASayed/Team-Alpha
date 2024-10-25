@@ -1,34 +1,85 @@
-#  import the existing VPC into Terraform
+provider "aws" {
+  region = "eu-west-2"
+}
 
-resource "aws_vpc" "main" {
-  # No need to define cidr_block since it's already set
+resource "aws_vpc" "tm_vpc" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns_support = true
+  enable_dns_hostnames = true
   tags = {
-    Name = "ThreatManagerVPC"
+    Name = "tm_vpc"
+    Project = "threat-model"
   }
 }
 
-# subnets 
-resource "aws_subnet" "tm_subnet1" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "172.31.10.0/24" 
-  availability_zone = "us-east-1a"
+resource "aws_subnet" "tm_subnet_1" {
+  vpc_id            = aws_vpc.tm_vpc.id
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = "eu-west-2a"
   tags = {
-    Name = "ThreatManagerSubnet1"
+    Name = "tm_subnet_1"
+    Project = "threat-model"
   }
 }
 
-resource "aws_subnet" "tm_subnet2" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "172.31.11.0/24" 
-  availability_zone = "us-east-1b"
+resource "aws_subnet" "tm_subnet_2" {
+  vpc_id            = aws_vpc.tm_vpc.id
+  cidr_block        = "10.0.2.0/24"
+  availability_zone = "eu-west-2b"
   tags = {
-    Name = "ThreatManagerSubnet2"
+    Name = "tm_subnet_2"
+    Project = "threat-model"
   }
 }
 
-# Security Groups
-resource "aws_security_group" "tm_ecs_sg" {
-  vpc_id = aws_vpc.main.id
+resource "aws_internet_gateway" "tm_igw" {
+  vpc_id = aws_vpc.tm_vpc.id
+  tags = {
+    Name = "tm_igw"
+    Project = "threat-model"
+  }
+}
+
+resource "aws_route_table" "tm_route_table" {
+  vpc_id = aws_vpc.tm_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.tm_igw.id
+  }
+  tags = {
+    Name = "tm_route_table"
+    Project = "threat-model"
+  }
+}
+
+resource "aws_route_table_association" "tm_rta_1" {
+  subnet_id      = aws_subnet.tm_subnet_1.id
+  route_table_id = aws_route_table.tm_route_table.id
+}
+
+resource "aws_route_table_association" "tm_rta_2" {
+  subnet_id      = aws_subnet.tm_subnet_2.id
+  route_table_id = aws_route_table.tm_route_table.id
+}
+
+resource "aws_security_group" "tm_sg" {
+  name        = "tm_security_group"
+  description = "Security group for threat model application"
+  vpc_id      = aws_vpc.tm_vpc.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   ingress {
     from_port   = 3000
@@ -40,33 +91,4 @@ resource "aws_security_group" "tm_ecs_sg" {
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "ThreatManagerSecurityGroup"
-  }
-}
-
-# load balancers 
-
-resource "aws_lb_target_group" "tm_target_group" {
-  name     = "tm-target-group"
-  port     = 3000
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.main.id
-
-  health_check {
-    path                = "/"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 5
-    unhealthy_threshold = 2
-    matcher             = "200"
-  }
-
-  tags = {
-    Name = "ThreatManagerTargetGroup"
-  }
-}
+  
