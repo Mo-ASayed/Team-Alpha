@@ -13,6 +13,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check if destruction is confirmed
+        if: ${{ github.event.inputs.confirm != 'yes' }}
+        run: |
+          echo "Destruction not confirmed. Exiting."
+          exit 1
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -22,13 +28,15 @@ jobs:
           terraform_version: 1.5.3
 
       - name: Terraform Init
-        run: terraform init
+        working-directory: terraform
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform init
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+        working-directory: terraform
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform destroy -auto-approve
