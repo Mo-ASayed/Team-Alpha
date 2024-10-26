@@ -18,7 +18,7 @@ resource "aws_ecs_task_definition" "threatmodeltask" {
 [
   {
     "name": "threatmodel",
-    "image": "992382674979.dkr.ecr.eu-west-2.amazonaws.com/threatmodelapp:latest",
+    "image": "992382674979.dkr.ecr.eu-west-2.amazonaws.com/threatmodelapp2:latest",
     "cpu": 1024,
     "memory": 2048,
     "essential": true,
@@ -46,12 +46,12 @@ resource "aws_ecs_service" "tm_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = [aws_subnet.tm_subnet1.id, aws_subnet.tm_subnet2.id]
-    security_groups  = [aws_security_group.tm_ecs_sg.id]
+    subnets          = [aws_subnet.tm_subnet_1.id, aws_subnet.tm_subnet_2.id]
+    security_groups  = [aws_security_group.tm_sg.id]
     assign_public_ip = true
   }
   load_balancer {
-    target_group_arn = aws_lb_target_group.tm_target_group.arn
+    target_group_arn = aws_lb_target_group.tm_tg.arn
     container_name   = "threatmodel"
     container_port   = 3000 # Forwarding traffic to container on port 3000
   }
