@@ -61,10 +61,7 @@ jobs:
 
       - name: Terraform Init
         working-directory: terraform
-        run:
-          ls -la
-          ll 
-          terraform init
+        run: terraform init
 
       - name: Terraform Validate
         working-directory: terraform
@@ -92,14 +89,8 @@ jobs:
         id: tf-plan
         run: |
           terraform init
-          terraform plan -out=tfplan
-          terraform show -no-color tfplan > tf-plan.txt
-      
-      - name: Upload Terraform Plan Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: tf-plan
-          path: terraform/tf-plan.txt
+          pwd
+          ls
 
   terraform_apply:
     name: 'Terraform Apply'
