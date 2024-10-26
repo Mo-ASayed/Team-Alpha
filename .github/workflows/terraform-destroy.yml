@@ -2,6 +2,12 @@ name: Terraform Destroy
 
 on:
   workflow_dispatch:  # Allows manual triggering of the destroy pipeline
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+      
 
 jobs:
   terraform:

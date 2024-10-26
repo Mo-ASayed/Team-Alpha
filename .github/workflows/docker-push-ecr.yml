@@ -1,9 +1,12 @@
 name: Docker Build and Push to ECR
 
 on:
-  push:
-    branches:
-      - main  # Runs this pipeline when code is pushed to the main branch
+  workflow_dispatch:  # Allows manual triggering of the push to ECR pipeline
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
 
 jobs:
   build_and_push:
@@ -25,8 +28,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-app:latest .
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/threatmodelapp:latest .
 
       - name: Push Docker image to Amazon ECR
         run: |
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-app:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/threatmodelapp:latest
