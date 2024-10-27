@@ -1,16 +1,16 @@
-# Threat Composer Tool: A Threat Modeling and Security Assessment Solution
+# Threat Composer Tool: A Threat Modelling and Security Assessment Solution
 
-This project utilizes Amazon's open-source **Threat Composer Tool** – a robust solution that facilitates **threat modeling** to improve **security assessments**. By providing a structured framework and a prescriptive "Threat Grammar," the Threat Composer Tool empowers users to systematically build and manage threat models that can evolve alongside system development. [Explore the tool's dashboard here.](https://awslabs.github.io/threat-composer/workspaces/default/dashboard)
+This project utilises Amazon's open-source **Threat Composer Tool** – a robust solution that facilitates **threat modelling** to improve **security assessments**. By providing a structured framework and a prescriptive "Threat Grammar," the Threat Composer Tool empowers users to systematically build and manage threat models that can evolve alongside system development. [Explore the tool's dashboard here.](https://awslabs.github.io/threat-composer/workspaces/default/dashboard)
 
 ## Project Overview
 
-This project builds and deploys the Threat Composer Tool on **AWS** using **containerized microservices** orchestrated by **ECS** (Elastic Container Service) and provisioned through **Terraform**. This setup encompasses a comprehensive **end-to-end automation workflow** with containerization, CI/CD pipelines, and secure deployment, ensuring a seamless and robust development-to-production experience.
+This project builds and deploys the Threat Composer Tool on **AWS** using containerised microservices orchestrated by **ECS** (Elastic Container Service) and provisioned through **Terraform**. This setup encompasses a comprehensive **end-to-end automation workflow** with containerisation, CI/CD pipelines, and secure deployment, ensuring a seamless and robust development-to-production experience.
 
 ---
 
-### 🚀 Threat Modeling Purpose and Benefits
+### 🚀 Threat Modelling Purpose and Benefits
 
-The **Threat Composer Tool** aims to streamline the threat modeling process by providing an organized framework to:
+The **Threat Composer Tool** aims to streamline the threat modelling process by providing an organised framework to:
 
 - **Identify** potential security threats in a structured and thorough manner 🕵️‍♂️
 - **Document** threats consistently, enabling clear and transparent communication 📜
@@ -28,10 +28,10 @@ With Threat Composer, teams can proactively enhance security by addressing poten
 ### 🛠️ Task/Assignment 📝
 
 1. **Repository Setup**  
-   - Set up a GitHub repository, ensuring files are well-organized and a clear README is present for easy navigation.
+   - Set up a GitHub repository, ensuring files are well-organised and a clear README is present for easy navigation.
 
-2. **Containerization**  
-   - Create a Dockerfile following best practices. Use **multi-stage builds** if applicable to optimize the container image. Push the image to **ECR** or **DockerHub** with a robust tagging strategy.
+2. **Containerisation**  
+   - Create a Dockerfile following best practices. Use **multi-stage builds** if applicable to optimise the container image. Push the image to **ECR** or **DockerHub** with a robust tagging strategy.
 
 3. **Infrastructure as Code (IaC) with Terraform**  
    - Provision all AWS resources using **Terraform** with modular configurations for reusability. Ensure that ECS is set up to handle scalability and load management, and configure **Route 53** for DNS and **AWS Certificate Manager** for HTTPS.
@@ -46,7 +46,6 @@ With Threat Composer, teams can proactively enhance security by addressing poten
    - Create a detailed **architecture diagram** using Lucidchart or draw.io to illustrate the infrastructure setup and data flow from DNS to ECS. Include screenshots of the live app in the README, with step-by-step documentation from local build to deployment.
 
 ---
-
 
 ### 💻 Local App Setup
 
@@ -103,4 +102,4 @@ Here, you’ll see the dashboard interface for the Threat Composer Tool, allowin
 
 - Port Issues: If localhost:3000 is already in use, specify a different port by appending the -l flag with a port number. For example, serve -s build -l 4000 to run it on localhost:4000.
 
-- Yarn Not Recognized: If you encounter errors about Yarn not being recognized, confirm that Yarn is installed by running yarn --version. If it’s not installed, follow the installation instructions linked above.
+- Yarn Not Recognized: If you encounter errors about Yarn not being recognised, confirm that Yarn is installed by running yarn --version. If it’s not installed, follow the installation instructions linked above.
