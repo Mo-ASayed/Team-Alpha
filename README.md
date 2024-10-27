@@ -4,6 +4,9 @@ This project utilises Amazon's open-source **Threat Composer Tool** – a robust
 
 ## Project Overview
 
+![Architecture](images/Architecture-diagram.PNG)
+
+
 This project deploys the Threat Composer Tool on **AWS** using **containerised microservices** orchestrated by **ECS** (Elastic Container Service) and provisioned through **Terraform**. The setup includes a comprehensive **end-to-end automation workflow** with containerisation, CI/CD pipelines, and secure deployment, ensuring an efficient and scalable flow from development to production.
 
 We selected **Amazon ECS** as the container orchestration platform for its scalability and seamless integration with other AWS services. ECS is a fully managed service that simplifies deploying and managing containers, reducing operational overheads. We also opted for **AWS Fargate**, a serverless compute engine for ECS, allowing containers to run without the need to manage the underlying infrastructure. Fargate automatically scales based on demand, providing flexible, cost-effective resource management, which is ideal for deploying the Threat Composer Tool.
@@ -105,6 +108,8 @@ To set up and run the Threat Composer Tool locally, follow these steps:
    http://localhost:3000/workspaces/default/dashboard
 
 Here, you’ll see the dashboard interface for the Threat Composer Tool, allowing you to explore its features locally.
+
+![Local-App-running](images/app running.PNG)
 
 ## 🐞 Troubleshooting Tips
 
