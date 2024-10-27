@@ -8,7 +8,7 @@ This project builds and deploys the Threat Composer Tool on **AWS** using contai
 
 ---
 
-### 🚀 Threat Modelling Purpose and Benefits
+## 🚀 Threat Modelling Purpose and Benefits
 
 The **Threat Composer Tool** aims to streamline the threat modelling process by providing an organised framework to:
 
@@ -25,7 +25,7 @@ With Threat Composer, teams can proactively enhance security by addressing poten
 
 ---
 
-### 🛠️ Task/Assignment 📝
+## 🛠️ Task/Assignment 📝
 
 1. **Repository Setup**  
    - Set up a GitHub repository, ensuring files are well-organised and a clear README is present for easy navigation.
@@ -47,7 +47,7 @@ With Threat Composer, teams can proactively enhance security by addressing poten
 
 ---
 
-### 💻 Local App Setup
+## 💻 Local App Setup
 
 To set up and run the Threat Composer Tool locally, follow these steps:
 
@@ -98,8 +98,12 @@ To set up and run the Threat Composer Tool locally, follow these steps:
 
 Here, you’ll see the dashboard interface for the Threat Composer Tool, allowing you to explore its features locally.
 
-# Troubleshooting Tips
+## 🐞 Troubleshooting Tips
+
 
 - Port Issues: If localhost:3000 is already in use, specify a different port by appending the -l flag with a port number. For example, serve -s build -l 4000 to run it on localhost:4000.
 
-- Yarn Not Recognized: If you encounter errors about Yarn not being recognised, confirm that Yarn is installed by running yarn --version. If it’s not installed, follow the installation instructions linked above.
+- Yarn Not Recognized: If you encounter errors about Yarn not being recognised, confirm that Yarn is installed by running 
+   ``` bash
+   yarn --version. 
+If it’s not installed, follow the installation instructions linked above.
